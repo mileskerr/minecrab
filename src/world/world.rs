@@ -77,15 +77,15 @@ impl World {
         // If there is a next chunk to generate, then do so.
         if self.next_gen_x <= WORLD_RADIUS {
             // Generate the chunk and then iterate on.
-            self.generate_chunk(self.next_gen_x, self.next_gen_y, self.next_gen_y, rl, thread, texture);
+            self.generate_chunk(self.next_gen_x, self.next_gen_y, self.next_gen_z, rl, thread, texture);
         }
         if self.next_gen_y == WORLD_RADIUS {
             self.next_gen_x += 1;
-            self.next_gen_y = 0;
-            self.next_gen_z = 0;
+            self.next_gen_y = -WORLD_RADIUS;
+            self.next_gen_z = -WORLD_RADIUS;
         } else if self.next_gen_z == WORLD_RADIUS {
             self.next_gen_y += 1;
-            self.next_gen_z = 0;
+            self.next_gen_z = -WORLD_RADIUS;
         } else {
             self.next_gen_z += 1;
         }

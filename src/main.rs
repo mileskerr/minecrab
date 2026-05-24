@@ -1,11 +1,13 @@
 use raylib::prelude::*;
 
+use crate::world::generation::generate_chunk;
+use crate::world::world::World;
+
 mod mesh_tools;
 mod camera_controls;
 mod world;
 
 use camera_controls::{Player, update_camera};
-use crate::world::world::World;
 
 
 const WINDOW_WIDTH: i32 = 1280;
@@ -34,6 +36,14 @@ fn main() {
         t.unwrap()
     };
 
+    let mut world: World = World::new();
+    for cx in 4..4 {
+        for cy in -4..4 {
+            for cz in -4..4 {
+                world.generate_chunk(cx, cy, cz, &mut rl, &thread, texture);
+            }
+        }
+    }
     // FIXME: I will be back one day, borrow checker...
     // let rl_ref = & rl;
     // let thread_ref = &thread;
