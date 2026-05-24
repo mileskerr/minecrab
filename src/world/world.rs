@@ -83,12 +83,11 @@ impl World {
         // increment counters
         self.next_gen_z += 1;
         if self.next_gen_z > WORLD_RADIUS {
+            self.next_gen_y += 1;
             if self.next_gen_y > WORLD_RADIUS {
                 // y iteration finished, reset y, bump x
                 self.next_gen_x += 1;
                 self.next_gen_y = -WORLD_RADIUS;
-            } else {
-                self.next_gen_y += 1;
             }
             // z iteration finished, reset z
             self.next_gen_z = -WORLD_RADIUS;
