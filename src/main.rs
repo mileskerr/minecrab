@@ -11,6 +11,7 @@ use crate::world::generation::generate_chunk;
 
 const WINDOW_WIDTH: i32 = 1280;
 const WINDOW_HEIGHT: i32 = 720;
+const GEN_RADIUS: i64 = 1; 
 
 fn main() {
     let (mut rl, thread) = raylib::init()
@@ -32,13 +33,14 @@ fn main() {
     };
 
     let mut models: Vec<Model> = Vec::new();
-    for cx in -4..4 {
-        for cy in -4..4 {
-            for cz in -4..4 {
-                models.push(generate_chunk(&mut rl, &thread, cx, cy, cz));
-            }
-        }
-    }
+
+    for cx in -GEN_RADIUS..GEN_RADIUS {
+    for cy in -GEN_RADIUS..GEN_RADIUS {
+    for cz in -GEN_RADIUS..GEN_RADIUS {
+        models.push(generate_chunk(&mut rl, &thread, cx, cy, cz));
+    }}}
+
+    return;
     // FIXME: I will be back one day, borrow checker...
     // let rl_ref = & rl;
     // let thread_ref = &thread;
