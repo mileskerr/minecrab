@@ -64,7 +64,15 @@ fn main() {
                 d.draw_text("WIP: Click to start updating camera", 20, 20, 16, Color::DARKGREEN);
             }
             if debug_display {
-                let debug_info = format!("Camera position: {:.4} {:.4} {:.4}", camera.position.x, camera.position.y, camera.position.z);
+                let mut debug_info = String::new();
+                debug_info += &format!(
+                    "Camera position: {:.4} {:.4} {:.4}\n", 
+                    camera.position.x, camera.position.y, camera.position.z
+                );
+                debug_info += &format!(
+                    "FPS: {}\n", 
+                    d.get_fps()
+                );
                 d.draw_text(&debug_info, 20, 20, 16, Color::DARKGREEN);
             }
 
