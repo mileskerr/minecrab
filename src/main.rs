@@ -4,7 +4,12 @@ use crate::world::generation::generate_chunk;
 use crate::world::world::World;
 
 mod mesh_tools;
+mod camera_controls;
 mod world;
+
+use mesh_tools::VecMesh;
+use camera_controls::{Player, update_camera};
+
 
 const WINDOW_WIDTH: i32 = 1280;
 const WINDOW_HEIGHT: i32 = 720;
@@ -17,12 +22,7 @@ fn main() {
         .highdpi()
         .build();
 
-    let mut camera = Camera3D::perspective(
-        Vector3::new(3.0, 3.0, 3.0),
-        Vector3::new(0.0, 0.0, 0.0),
-        Vector3::new(0.0, 1.0, 0.0),
-        45.0,
-    );
+    let mut player = Player::new();
 
     let mut first_click = false;
     let mut debug_display = false; // toggle
@@ -34,7 +34,7 @@ fn main() {
     };
 
     let mut world: World = World::new();
-    for cx in -4..4 {
+    for cx in 4..4 {
         for cy in -4..4 {
             for cz in -4..4 {
                 world.generate_chunk(cx, cy, cz, &mut rl, &thread, texture);
@@ -55,16 +55,18 @@ fn main() {
                 rl.disable_cursor();
             }
         } else {
-            rl.update_camera(&mut camera, CameraMode::CAMERA_FIRST_PERSON);
+            // rl.update_camera(&mut camera, CameraMode::CAMERA_FIRST_PERSON);
+            update_camera(&mut player, &mut rl);
         }
         if rl.is_key_pressed(KeyboardKey::KEY_BACKSLASH) && first_click { // toggle debug menu
             debug_display = !debug_display;
         }
 
+
         rl.draw(&thread, |mut d| {
             d.clear_background(Color::LIGHTBLUE);
 
-            world.render(&mut d, camera);
+            world.render(&mut d, player.camera);
 
             if !first_click {
                 d.draw_text("WIP: Click to start updating camera", 20, 20, 16, Color::DARKGREEN);
@@ -73,7 +75,9 @@ fn main() {
                 let mut debug_info = String::new();
                 debug_info += &format!(
                     "Camera position: {:.4} {:.4} {:.4}\n",
-                    camera.position.x, camera.position.y, camera.position.z
+                    player.camera.position.x,
+                    player.camera.position.y,
+                    player.camera.position.z
                 );
                 debug_info += &format!(
                     "FPS: {}\n",
