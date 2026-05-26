@@ -7,4 +7,5 @@ pub enum BlockData {
     STONE,
     WOOD,
     LEAVES,
+    BEDROCK,
 }
