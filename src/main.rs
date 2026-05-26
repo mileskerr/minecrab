@@ -4,7 +4,7 @@ mod player;
 mod render;
 mod world;
 
-use player::{Player, update_camera};
+use player::{Player, update_camera_angle, update_camera_position};
 use world::generation::World;
 
 use crate::render::mesh_tools;
@@ -12,6 +12,8 @@ use crate::render::worldmesh::WorldRenderer;
 
 const WINDOW_WIDTH: i32 = 1280;
 const WINDOW_HEIGHT: i32 = 720;
+
+const TICK_LENGTH: f32 = 0.025; // 40 ticks per second
 
 // Generate one chunk every [FRAMES_PER_CHUNK] frames so world generation isn't
 // exceedingly laggy at the beginning.
@@ -29,6 +31,8 @@ fn main() {
 
     let mut first_click = false;
     let mut debug_display = false; // toggle
+
+    let mut update_camera_in = 0_f32; // time until we run update_camera()
 
     let texture: ffi::Texture = unsafe {
         let mut t = rl.load_texture(&thread, "assets/full-textures.png").unwrap();
@@ -55,7 +59,12 @@ fn main() {
             }
         } else {
             // rl.update_camera(&mut camera, CameraMode::CAMERA_FIRST_PERSON);
-            update_camera(&mut player, &mut rl);
+            update_camera_in -= rl.get_frame_time();
+            update_camera_angle(&mut player, &mut rl);
+            while update_camera_in < 0_f32 {
+                update_camera_position(&mut player, &mut rl);
+                update_camera_in += TICK_LENGTH;
+            }
         }
         if rl.is_key_pressed(KeyboardKey::KEY_BACKSLASH) && first_click { // toggle debug menu
             debug_display = !debug_display;
