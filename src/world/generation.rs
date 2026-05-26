@@ -112,17 +112,27 @@ impl World {
         static SSN: std::sync::LazyLock<SuperSimplex> =
             std::sync::LazyLock::new(|| SuperSimplex::new(42));
 
-        let noise_scale = 16.;
+        let noise_scale = 80.; // setting this too low (<8 or so) bizarrely results in a "attempt to multiply with overflow" error
 
         let sample_point = [
-            (x as f64 / noise_scale),
-            (y as f64 / noise_scale),
-            (z as f64 / noise_scale)
+            ((x as f64 / noise_scale)),
+            // (y as f64 / noise_scale), // to get a height map
+            0_f64, 
+            ((z as f64 / noise_scale))
         ];
 
-        let block_data = if (
-            SSN.get(sample_point) > 0.5
-        ) {BlockData::GRASS} else {BlockData::AIR};
+        let height = (SSN.get(sample_point) + 5_f64) * 12_f64; 
+
+        let block_data = if height < y as f64 {
+            BlockData::AIR
+        } else if height < (y - 1) as f64 {
+            BlockData::GRASS
+        } else if height > 4_f64 {
+            BlockData::STONE
+        } else {
+            BlockData::BEDROCK
+        };
+
 
         self.set_block_data(x, y, z, block_data);
     }
@@ -136,10 +146,6 @@ impl World {
 
         for y in r.clone() { for z in r.clone() { for x in r.clone() {
             let (wx, wy, wz) = (
-                /* FIXME: this is definitely broken on negative numbers
-                 * . or something around here is.
-                 * i'm too tired to debug this, gotta wake up early tomorrow
-                 */
                 x + CHUNK_SIZE * cx,
                 y + CHUNK_SIZE * cy,
                 z + CHUNK_SIZE * cz
