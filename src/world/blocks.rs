@@ -23,71 +23,51 @@ pub struct BlockTextureCoordinates {
 
 // TODO: stash these in a file somewhere?
 
+// A block whose faces all have an identical texture.
+macro_rules! monotextured_block {
+    ($x:expr, $y:expr) => {BlockTextureCoordinates {
+        left: ($x, $y),
+        right: ($x, $y),
+        top: ($x, $y),
+        bottom: ($x, $y),
+        front: ($x, $y),
+        back: ($x, $y),
+    }}
+}
+
+// A block with a unique top texture, bottom texture, and side texture.
+// For example, grass and wood both do this.
+macro_rules! cylindrical_textured_block {
+    ($top:expr, $bottom:expr, $side:expr) => {BlockTextureCoordinates {
+        left: $side,
+        right: $side,
+        top: $top,
+        bottom: $bottom,
+        front: $side,
+        back: $side,
+    }}
+}
+
 // If a block is invalid, we render with the Adam pickaxe texture
-const ERROR_COORDS: BlockTextureCoordinates = BlockTextureCoordinates {
-    right: (0.8, 0.0),
-    left: (0.8, 0.0),
-    top: (0.8, 0.0),
-    bottom: (0.8, 0.0),
-    front: (0.8, 0.0),
-    back: (0.8, 0.0),
-};
+const ERROR_COORDS: BlockTextureCoordinates = monotextured_block!(0.8, 0.0);
 
 // For completeness, air will give us the Jake texture in case it gets rendered
 // by accident, so we know what is happening
-const AIR_COORDS: BlockTextureCoordinates = BlockTextureCoordinates {
-    right: (0.9, 0.0),
-    left: (0.9, 0.0),
-    top: (0.9, 0.0),
-    bottom: (0.9, 0.0),
-    front: (0.9, 0.0),
-    back: (0.9, 0.0),
-};
+const AIR_COORDS: BlockTextureCoordinates = monotextured_block!(0.9, 0.0);
 
-const GRASS_COORDS: BlockTextureCoordinates = BlockTextureCoordinates {
-    right: (0.1, 0.0),
-    left: (0.1, 0.0),
-    top: (0.0, 0.0),
-    bottom: (0.2, 0.0),
-    front: (0.1, 0.0),
-    back: (0.1, 0.0),
-};
+const GRASS_COORDS: BlockTextureCoordinates = cylindrical_textured_block!(
+    (0.0, 0.0), (0.2, 0.0), (0.1, 0.0)
+);
 
-const DIRT_COORDS: BlockTextureCoordinates = BlockTextureCoordinates {
-    right: (0.2, 0.0),
-    left: (0.2, 0.0),
-    top: (0.2, 0.0),
-    bottom: (0.2, 0.0),
-    front: (0.2, 0.0),
-    back: (0.2, 0.0),
-};
+const DIRT_COORDS: BlockTextureCoordinates = monotextured_block!(0.2, 0.0);
 
-const STONE_COORDS: BlockTextureCoordinates = BlockTextureCoordinates {
-    right: (0.3, 0.0),
-    left: (0.3, 0.0),
-    top: (0.3, 0.0),
-    bottom: (0.3, 0.0),
-    front: (0.3, 0.0),
-    back: (0.3, 0.0),
-};
+const STONE_COORDS: BlockTextureCoordinates = monotextured_block!(0.3, 0.0);
 
-const WOOD_CORDS: BlockTextureCoordinates = BlockTextureCoordinates {
-    right: (0.3, 0.1),
-    left: (0.3, 0.1),
-    top: (0.4, 0.1),
-    bottom: (0.4, 0.1),
-    front: (0.3, 0.1),
-    back: (0.3, 0.1),
-};
+const WOOD_CORDS: BlockTextureCoordinates = cylindrical_textured_block!(
+    (0.4, 0.1), (0.4, 0.1), (0.3, 0.1)
+);
 
-const LEAF_COORDS: BlockTextureCoordinates = BlockTextureCoordinates {
-    right: (0.5, 0.1),
-    left: (0.5, 0.1),
-    top: (0.5, 0.1),
-    bottom: (0.5, 0.1),
-    front: (0.5, 0.1),
-    back: (0.5, 0.1),
-};
+const LEAF_COORDS: BlockTextureCoordinates = monotextured_block!(0.5, 0.1);
 
 pub fn get_block_texture_coordinates(block_type: BlockData) -> BlockTextureCoordinates {
     match block_type {
