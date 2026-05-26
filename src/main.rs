@@ -19,6 +19,10 @@ const TICK_LENGTH: f32 = 0.025; // 40 ticks per second
 // exceedingly laggy at the beginning.
 const FRAMES_PER_CHUNK: i32 = 5;
 
+fn tick(world: &mut World, player: &mut Player, rl: &mut RaylibHandle) {
+    update_camera_position(player, rl);
+}
+
 fn main() {
     let (mut rl, thread) = raylib::init()
         .size(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -32,7 +36,7 @@ fn main() {
     let mut first_click = false;
     let mut debug_display = false; // toggle
 
-    let mut update_camera_in = 0_f32; // time until we run update_camera()
+    let mut next_tick_in = 0_f32; // time until we run update_camera()
 
     let texture: ffi::Texture = unsafe {
         let mut t = rl.load_texture(&thread, "assets/full-textures.png").unwrap();
@@ -58,14 +62,15 @@ fn main() {
                 rl.disable_cursor();
             }
         } else {
-            // rl.update_camera(&mut camera, CameraMode::CAMERA_FIRST_PERSON);
-            update_camera_in -= rl.get_frame_time();
             update_camera_angle(&mut player, &mut rl);
-            while update_camera_in < 0_f32 {
-                update_camera_position(&mut player, &mut rl);
-                update_camera_in += TICK_LENGTH;
-            }
         }
+
+        next_tick_in -= rl.get_frame_time();
+        while next_tick_in < 0_f32 {
+            tick(&mut world, &mut player, &mut rl);
+            next_tick_in += TICK_LENGTH;
+        }
+
         if rl.is_key_pressed(KeyboardKey::KEY_BACKSLASH) && first_click { // toggle debug menu
             debug_display = !debug_display;
         }
