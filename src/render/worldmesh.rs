@@ -1,14 +1,15 @@
 use raylib::prelude::*;
 
 use crate::mesh_tools::VecMesh;
-use crate::world::blocks::{BlockData, GRASS_COORDS};
+use crate::world::blocks::{BlockData, get_block_texture_coordinates};
 use crate::world::generation::{CHUNK_SIZE, World};
 
 pub fn build_geometry_voxel(
     world: &mut World, vmesh: &mut VecMesh, x: i64, y: i64, z: i64
 ) {
-    if world.get_block_data(x, y, z) == BlockData::AIR { return }
-    let base = GRASS_COORDS;
+    let block_type = world.get_block_data(x, y, z);
+    if block_type == BlockData::AIR { return }
+    let base = get_block_texture_coordinates(block_type);
     for (dx, dy, dz) in [
         (-1, 0, 0),
         (1, 0, 0),
