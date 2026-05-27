@@ -6,6 +6,7 @@ mod world;
 
 use player::{Player, update_camera_angle, update_camera_position};
 use world::generation::World;
+use world::collision::voxel_raycast;
 
 use crate::render::mesh_tools;
 use crate::render::worldmesh::WorldRenderer;
@@ -19,8 +20,13 @@ const TICK_LENGTH: f32 = 0.025; // 40 ticks per second
 // exceedingly laggy at the beginning.
 const FRAMES_PER_CHUNK: i32 = 5;
 
-fn tick(world: &mut World, player: &mut Player, rl: &mut RaylibHandle) {
+fn tick(
+    world: &mut World, player: &mut Player, rl: &mut RaylibHandle
+) {
     update_camera_position(player, rl);
+    //terrain generation should be in here too, and a lot of other stuff.
+    //probably need some kind of (dreaded) GameState object to keep the
+    //parameter list from being ridiculous.
 }
 
 fn main() {
@@ -97,6 +103,21 @@ fn main() {
                 debug_info += &format!(
                     "FPS: {}\n",
                     d.get_fps()
+                );
+                let p = player.camera.position;
+                let mut dir = player.camera.target - player.camera.position;
+                dir.normalize();
+                let hit = voxel_raycast(&world, p.x, p.y, p.z, dir.x, dir.y, dir.z, Some(100.));
+                debug_info += &format!(
+                    "Looking at block: {}\n",
+                    hit.map_or(
+                        String::from("--"),
+                        |h| format!(
+                            "{:?} - {:.4} {:.4} {:.4}",
+                            world.get_block_data(h.x, h.y, h.z),
+                            h.x, h.y, h.z
+                        )
+                    )
                 );
                 d.draw_text(&debug_info, 20, 20, 16, Color::DARKGREEN);
             }

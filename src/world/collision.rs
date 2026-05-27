@@ -1,25 +1,25 @@
 use super::generation::World;
 use super::blocks::BlockData;
 
-struct VoxelRaycastHit {
+pub struct VoxelRaycastHit {
     //coordinates of the voxel that was hit.
-    x: i64, y: i64, z: i64,
+    pub x: i64, pub y: i64, pub z: i64,
 
     //normal of the face that was hit. could technically be an int since
     //each value will only ever be 0, -1, or 1.
-    normal_x: f64, normal_y: f64, normal_z: f64,
+    pub normal_x: f32, pub normal_y: f32, pub normal_z: f32,
     
     //where the hit was on the face.
-    u: f64, v: f64
+    pub u: f32, pub v: f32
 }
 
-fn voxel_rayast(
+pub fn voxel_raycast(
     world: &World,
-    x: f64, y: f64, z: f64,
-    dx: f64, dy: f64, dz: f64,
-    max_distance: Option<f64>
+    x: f32, y: f32, z: f32,
+    dx: f32, dy: f32, dz: f32,
+    max_distance: Option<f32>
 ) -> Option<VoxelRaycastHit> {
-    const ROOT2: f64 = 1.4143;
+    const ROOT2: f32 = 1.4143;
     const MAX_STEPS: i64 = 10_000;
     
     let max_steps = if let Some(md) = max_distance {
@@ -35,7 +35,7 @@ fn voxel_rayast(
     let mut voxel = [x.floor(), y.floor(), z.floor()];
 
     for _ in 0..max_steps {
-        let mut lowest_scale_factor = f64::INFINITY;
+        let mut lowest_scale_factor = f32::INFINITY;
         let mut closest_axis = 0usize;
 
 
@@ -64,16 +64,53 @@ fn voxel_rayast(
 
         //step position
         for axis in 0..3 { pos[axis] += step[axis]; }
-        
-        //step voxel
-        voxel[closest_axis] +=
+
+        let step_direction = 
             if direction[closest_axis] > 0. { 1. }
             else { -1. };
+        
+        //step voxel
+        voxel[closest_axis] += step_direction;
 
         let (vx, vy, vz) = (voxel[0] as i64, voxel[1] as i64, voxel[2] as i64);
+        //will be useful for setting hit.u and hit.v
+        //let (px, py, pz) = (pos[0] as i64, pos[1] as i64, pos[2] as i64);
         let block = world.get_block_data(vx, vy, vz);
 
+        if block != BlockData::AIR {
+            let mut hit = VoxelRaycastHit {
+                x: vx, y: vy, z: vz,
+                normal_x: 0., normal_y: 0., normal_z: 0.,
+                u: 0., v: 0.
+            };
+
+            match (closest_axis, step_direction) {
+
+                //TODO: set hit.u and hit.v in here
+                (0, -1.) => {
+                    hit.normal_x = 1.;
+                },
+                (0, 1.) => {
+                    hit.normal_x = -1.;
+                },
+                (1, -1.) => {
+                    hit.normal_y = 1.;
+                },
+                (1, 1.) => {
+                    hit.normal_y = -1.;
+                },
+                (2, -1.) => {
+                    hit.normal_z = 1.;
+                }
+                (2, 1.) => {
+                    hit.normal_z = -1.;
+                }
+                _ => panic!("invalid axis/step direction")
+            }
+
+            return Some(hit);
+        }
     }
 
-    None
+    return None;
 }
