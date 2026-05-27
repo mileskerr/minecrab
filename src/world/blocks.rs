@@ -50,35 +50,39 @@ macro_rules! cylindrical_textured_block {
 }
 
 // If a block is invalid, we render with the Adam pickaxe texture
-const ERROR_COORDS: BlockTextureCoordinates = monotextured_block!(0.8, 0.0);
+const TEX_COORDS_ERROR: BlockTextureCoordinates = monotextured_block!(0.8, 0.0);
 
 // For completeness, air will give us the Jake texture in case it gets rendered
 // by accident, so we know what is happening
-const AIR_COORDS: BlockTextureCoordinates = monotextured_block!(0.9, 0.0);
+const TEX_COORDS_AIR: BlockTextureCoordinates = monotextured_block!(0.9, 0.0);
 
-const GRASS_COORDS: BlockTextureCoordinates = cylindrical_textured_block!(
+const TEX_COORDS_GRASS: BlockTextureCoordinates = cylindrical_textured_block!(
     (0.0, 0.0), (0.2, 0.0), (0.1, 0.0)
 );
 
-const DIRT_COORDS: BlockTextureCoordinates = monotextured_block!(0.2, 0.0);
+const TEX_COORDS_DIRT: BlockTextureCoordinates = monotextured_block!(0.2, 0.0);
 
-const STONE_COORDS: BlockTextureCoordinates = monotextured_block!(0.3, 0.0);
+const TEX_COORDS_STONE: BlockTextureCoordinates = monotextured_block!(0.3, 0.0);
 
-const WOOD_CORDS: BlockTextureCoordinates = cylindrical_textured_block!(
+const TEX_COORDS_WOOD: BlockTextureCoordinates = cylindrical_textured_block!(
     (0.4, 0.1), (0.4, 0.1), (0.3, 0.1)
 );
 
-const LEAF_COORDS: BlockTextureCoordinates = monotextured_block!(0.5, 0.1);
+const TEX_COORDS_LEAVES: BlockTextureCoordinates = monotextured_block!(0.5, 0.1);
 
-pub fn get_block_texture_coordinates(block_type: BlockData) -> BlockTextureCoordinates {
+impl BlockTextureCoordinates {
+
+    pub fn new(block_type: BlockData) -> BlockTextureCoordinates {
     match block_type {
-        BlockData::AIR => AIR_COORDS,
-        BlockData::GRASS => GRASS_COORDS,
-        BlockData::DIRT => DIRT_COORDS,
-        BlockData::STONE => STONE_COORDS,
-        BlockData::WOOD => WOOD_CORDS,
-        BlockData::LEAVES => LEAF_COORDS,
+        BlockData::AIR => TEX_COORDS_AIR,
+        BlockData::GRASS => TEX_COORDS_GRASS,
+        BlockData::DIRT => TEX_COORDS_DIRT,
+        BlockData::STONE => TEX_COORDS_STONE,
+        BlockData::WOOD => TEX_COORDS_WOOD,
+        BlockData::LEAVES => TEX_COORDS_LEAVES,
         // Not implemented yet!
-        _ => ERROR_COORDS,
+        _ => TEX_COORDS_ERROR,
     }
+}
+
 }

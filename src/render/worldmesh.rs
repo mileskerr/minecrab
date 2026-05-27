@@ -1,7 +1,7 @@
 use raylib::prelude::*;
 
 use crate::mesh_tools::VecMesh;
-use crate::world::blocks::{BlockData, get_block_texture_coordinates};
+use crate::world::blocks::{BlockData, BlockTextureCoordinates};
 use crate::world::generation::{CHUNK_SIZE, World};
 
 pub fn build_geometry_voxel(
@@ -9,7 +9,7 @@ pub fn build_geometry_voxel(
 ) {
     let block_type = world.get_block_data(x, y, z);
     if block_type == BlockData::AIR { return }
-    let base = get_block_texture_coordinates(block_type);
+    let base = BlockTextureCoordinates::new(block_type);
     for (dx, dy, dz) in [
         (-1, 0, 0),
         (1, 0, 0),
