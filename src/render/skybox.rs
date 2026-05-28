@@ -25,6 +25,34 @@ pub fn create_skybox_mesh() -> Mesh {
         -SK_DIST, -SK_DIST, -SK_DIST,
         -SK_DIST,  SK_DIST, -SK_DIST,
         -SK_DIST, -SK_DIST,  SK_DIST,
+        // North face
+         SK_DIST,  SK_DIST, -SK_DIST,
+        -SK_DIST,  SK_DIST, -SK_DIST,
+         SK_DIST, -SK_DIST, -SK_DIST,
+        -SK_DIST, -SK_DIST, -SK_DIST,
+         SK_DIST, -SK_DIST, -SK_DIST,
+        -SK_DIST,  SK_DIST, -SK_DIST,
+        // South face
+         SK_DIST,  SK_DIST,  SK_DIST,
+         SK_DIST, -SK_DIST,  SK_DIST,
+        -SK_DIST,  SK_DIST,  SK_DIST,
+        -SK_DIST, -SK_DIST,  SK_DIST,
+        -SK_DIST,  SK_DIST,  SK_DIST,
+         SK_DIST, -SK_DIST,  SK_DIST,
+        // Top face
+         SK_DIST,  SK_DIST,  SK_DIST,
+        -SK_DIST,  SK_DIST,  SK_DIST,
+         SK_DIST,  SK_DIST, -SK_DIST,
+        -SK_DIST,  SK_DIST, -SK_DIST,
+         SK_DIST,  SK_DIST, -SK_DIST,
+        -SK_DIST,  SK_DIST,  SK_DIST,
+        // Bottom face
+         SK_DIST, -SK_DIST,  SK_DIST,
+         SK_DIST, -SK_DIST, -SK_DIST,
+        -SK_DIST, -SK_DIST,  SK_DIST,
+        -SK_DIST, -SK_DIST, -SK_DIST,
+        -SK_DIST, -SK_DIST,  SK_DIST,
+         SK_DIST, -SK_DIST, -SK_DIST,
     ]);
     vmesh.normals.extend_from_slice(&[
         // East face faces westwards
@@ -41,6 +69,34 @@ pub fn create_skybox_mesh() -> Mesh {
          1., 0., 0.,
          1., 0., 0.,
          1., 0., 0.,
+        // North face
+        0., 0.,  1.,
+        0., 0.,  1.,
+        0., 0.,  1.,
+        0., 0.,  1.,
+        0., 0.,  1.,
+        0., 0.,  1.,
+        // South face
+        0., 0., -1.,
+        0., 0., -1.,
+        0., 0., -1.,
+        0., 0., -1.,
+        0., 0., -1.,
+        0., 0., -1.,
+        // Top face
+        0., -1., 0.,
+        0., -1., 0.,
+        0., -1., 0.,
+        0., -1., 0.,
+        0., -1., 0.,
+        0., -1., 0.,
+        // Bottom face
+        0.,  1., 0.,
+        0.,  1., 0.,
+        0.,  1., 0.,
+        0.,  1., 0.,
+        0.,  1., 0.,
+        0.,  1., 0.,
     ]);
     let mut mesh = vmesh.to_mesh();
     unsafe { mesh.upload(false); }
