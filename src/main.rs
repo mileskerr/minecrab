@@ -54,8 +54,8 @@ fn main() {
         let shader = LoadShader(
             // Defying all understanding, this string does NOT get null-delimited
             // by default, so we haveto add one in manually.
-            ptr::null(),
-            "src/shader/block.frag".as_bytes().as_ptr() as *const i8);
+            "src/shader/block.vert\0".as_bytes().as_ptr() as *const i8,
+            "src/shader/block.frag\0".as_bytes().as_ptr() as *const i8);
         material.shader = shader;
     }
     let maps = material.maps_mut();
