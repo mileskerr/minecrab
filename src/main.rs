@@ -10,7 +10,7 @@ use player::{Player, update_camera_angle, update_camera_position};
 use world::generation::World;
 
 use crate::render::mesh_tools;
-use crate::render::skybox::create_skybox_mesh;
+use crate::render::skybox::{create_skybox_mesh, day_amount};
 use crate::render::worldmesh::WorldRenderer;
 
 const WINDOW_WIDTH: i32 = 1280;
@@ -111,6 +111,11 @@ fn main() {
             let mut skybox_cam = player.camera.clone();
             skybox_cam.position = Vector3::new(0.0, 0.0, 0.0);
             skybox_cam.target -= player.camera.position;
+
+            let day_amount: f32 = day_amount(frame);
+            // In the future, we need to pass this quantity into the shader. I
+            // wrestled with OpenGL for 3 hours and determined that it is really
+            // not worth the effort right now.
 
             d.draw_mode3D(skybox_cam, |mut d2, _camera| {
                 d2.draw_mesh(&mut skybox_mesh, skybox_material.clone(), Matrix::identity());

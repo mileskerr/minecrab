@@ -2,6 +2,28 @@ use raylib::models::{Mesh, RaylibMesh};
 
 use crate::render::mesh_tools::VecMesh;
 
+// How many frames until day/night events happen.
+const FRAMES_UNTIL_SUNSET: i32 = 1000;
+const FRAMES_UNTIL_DUSK: i32 = 1150;
+const FRAMES_UNTIL_DAWN: i32 = 1850;
+const FRAMES_UNTIL_DAY: i32 = 2000;
+
+// Computes how much "day" there is (from 1.0 during the day to 0.0 at night,
+// with intermediate amounts at dawn and dusk) given the number of frames that
+// have elapsed since world creation.
+pub fn day_amount(frames: i32) -> f32 {
+    let time_in_day = frames % FRAMES_UNTIL_DAY;
+    if time_in_day < FRAMES_UNTIL_SUNSET {
+        return 1.0;
+    } else if time_in_day < FRAMES_UNTIL_DUSK {
+        return (FRAMES_UNTIL_DUSK - time_in_day) as f32 / (FRAMES_UNTIL_DUSK - FRAMES_UNTIL_SUNSET) as f32;
+    } else if time_in_day < FRAMES_UNTIL_DAWN {
+        return 0.0;
+    } else {
+        return (time_in_day - FRAMES_UNTIL_DAWN) as f32 / (FRAMES_UNTIL_DAY - FRAMES_UNTIL_DAWN) as f32;
+    }
+}
+
 // We need to render the skybox as a cube in a fixed location relative to the
 // player, but NOT in a fixed orientation (like the end portal is in Minecraft,)
 // for example. This needs to be far enough away that the skybox won't eclipse

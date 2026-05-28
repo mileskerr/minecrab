@@ -12,5 +12,7 @@ const vec4 dayColor = vec4(0.5, 0.8, 1.0, 1.0);
 const vec4 nightColor = vec4(0.1, 0.1, 0.1, 1.0);
 
 void main() {
-    fragColor = nightColor;
+    fragColor = dayColor;
+    // In the future ...
+    // fragColor = (1.0 - dayAmount) * nightColor + dayAmount * dayColor;
 }
