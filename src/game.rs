@@ -19,6 +19,8 @@ pub struct Sounds<'a> {
 }
 
 pub struct GameData {
+    // all durations in seconds.
+    // could use std::time::Duration but i don't see the point.
     pub paused: bool,
     pub should_quit: bool,
 
@@ -32,14 +34,16 @@ pub struct GameData {
 
     // set every tick to the string to show on the debug screen
     pub debug_text: String,
+
     pub debug_frame_times: VecDeque<f32>,
     pub debug_info_shown: bool,
 
     pub tick_counter: u64,
     pub frame_counter: u64,
-
-    // in seconds. could use std::time::Duration but i don't see the point.
     pub last_tick_time: f32,
+
+    // total meaning including time spent waiting, unlike last_tick_time
+    // and debug_frame_times which only count the time spent working.
     pub last_frame_total_time: f32,
     
     // commented out to stop dead code warning,
@@ -122,13 +126,11 @@ fn debug_info_fmt(gd: &mut GameData) -> String {
 
     let Vector3 {x: cam_x, y: cam_y, z: cam_z} = gd.player.camera.position;
     let fps = 1./gd.last_frame_total_time;
-    let tick_counter = gd.tick_counter;
 
     return format!("
         camera position: {cam_x:.4} {cam_y:.4} {cam_z:.4}
         looking at block: {looking_at}
         FPS: {fps}
-        tick: {tick_counter}
     ").lines()
         .map(|l| String::from(l.trim_start()) + "\n")
         .collect();
