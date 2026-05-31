@@ -141,7 +141,8 @@ fn main() {
             });
 
             // World
-            player.update_camera(interp);
+
+            if !gd.paused { player.update_camera(interp); }
 
             world_renderer.render(&mut d, player.camera);
 
@@ -191,6 +192,7 @@ fn main() {
 
         gd.frame_counter += 1;
         gd.last_frame_total_time = frame_start.elapsed().as_secs_f32();
+        gd.should_quit = true;
     }
 }
 

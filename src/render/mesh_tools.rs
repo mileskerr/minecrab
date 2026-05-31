@@ -109,7 +109,7 @@ impl VecMesh {
         self.colors.extend_from_slice(&[c.r, c.g, c.b]);
     }
 
-    pub fn to_mesh(mut self: VecMesh) -> Mesh {
+    pub fn to_mesh(self: VecMesh) -> Mesh {
         let vertex_count = (self.vertices.len() / 3) as i32;
         let triangle_count =
             if self.indices.len() > 0 { self.indices.len() / 3 }
@@ -127,7 +127,7 @@ impl VecMesh {
 
         let raw_mesh = ffi::Mesh {
             vaoId: self.vao_id,
-            vboId: self.vbo_id.as_mut_ptr(),
+            vboId: vec_to_ptr(self.vbo_id),
 
             vertexCount: vertex_count,
             triangleCount: triangle_count,
