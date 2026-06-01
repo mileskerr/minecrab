@@ -70,7 +70,6 @@ fn main() {
     // don't you dare create a "new"
     // or "init" method for this struct
     let mut gd = GameData {
-        rl,
         sounds,
         player: Player::new(),
         world: World::new(),
@@ -95,7 +94,7 @@ fn main() {
 
         if next_tick_in < 0_f32 {
             let tick_start = Instant::now();
-            game::tick(&mut gd);
+            game::tick(&mut gd, &mut rl);
             gd.tick_counter += 1;
             gd.last_tick_time = tick_start.elapsed().as_secs_f32();
             next_tick_in += TICK_LENGTH;
@@ -110,7 +109,7 @@ fn main() {
         // member we need to mutate inside the closure separately here.
         // This makes it impossible to refactor parts of drawing (that need
         // access to gd) into their own functions. Not sure how to fix. -m
-        let (rl, player) = (&mut gd.rl, &mut gd.player);
+        let player = &mut gd.player;
         let world_renderer = &mut gd.world_renderer;
 
         rl.draw(&thread, |mut d| {

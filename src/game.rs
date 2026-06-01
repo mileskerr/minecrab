@@ -21,8 +21,6 @@ pub struct GameData {
     pub paused: bool,
     pub should_quit: bool,
 
-    pub rl: RaylibHandle,
-
     pub player: Player,
     pub world: World,
 
@@ -50,15 +48,15 @@ pub struct GameData {
     pub sounds: &'static Sounds<'static>
 }
 
-pub fn tick(gd: &mut GameData) {
+pub fn tick(gd: &mut GameData, rl: &mut RaylibHandle) {
     unsafe { raylib::ffi::PollInputEvents(); }
 
-    gd.should_quit |= gd.rl.window_should_close();
+    gd.should_quit |= rl.window_should_close();
 
     if gd.paused {
-        if gd.rl.is_key_pressed(KEY_ESCAPE) { gd.paused = false; }
+        if rl.is_key_pressed(KEY_ESCAPE) { gd.paused = false; }
     } else {
-        let (rl, world, player) = (&mut gd.rl, &mut gd.world, &mut gd.player);
+        let (world, player) = (&mut gd.world, &mut gd.player);
 
         player.process_tick(rl);
 
