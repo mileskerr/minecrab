@@ -192,7 +192,6 @@ fn main() {
 
         gd.frame_counter += 1;
         gd.last_frame_total_time = frame_start.elapsed().as_secs_f32();
-        gd.should_quit = true;
     }
 }
 
